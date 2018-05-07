@@ -22,8 +22,8 @@ class Database {
      * A setup function that creates a new database object with the necessary settings.
      * @param {object} settings The settings to use for the mssql module.
      */
-    static setup(settings) {
-        Database.settings = settings;
+    constructor(settings) {
+        this.settings = settings;
     }
 
     //  ###  #  #   ##   ###   #  #
@@ -37,9 +37,9 @@ class Database {
      * @param {object} params The parameters of the query.
      * @return {Promise} A promise that resolves when the query is complete.
      */
-    static query(sqlStr, params) {
+    query(sqlStr, params) {
         return new Promise((resolve, reject) => {
-            if (!Database.settings) {
+            if (!this.settings) {
                 reject(new Error("You haven't setup your settings yet!"));
                 return;
             }
@@ -48,7 +48,7 @@ class Database {
                 params = {};
             }
 
-            const conn = new sql.ConnectionPool(Database.settings, (errPool) => {
+            const conn = new sql.ConnectionPool(this.settings, (errPool) => {
 
                 if (errPool) {
                     reject(errPool);

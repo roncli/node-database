@@ -6,7 +6,7 @@ A simple reusable class to query a MS SQL Server database.  This uses the [mssql
 ```javascript
 const Db = require("node-database");
 
-Db.setup({
+const db = new Db({
     server: "ms.sql.server.com",
     port: 1433,
     user: "my_user_name",
@@ -19,7 +19,7 @@ Db.setup({
     }
 });
 
-Db.query(
+db.query(
     "SELECT col1, col2 FROM myTable WHERE col3 = @col3",
     {col3: {type: Db.INT, value: 123}}
 ).then((data) => {
