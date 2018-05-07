@@ -11,15 +11,14 @@ const sql = require("mssql");
 * Defines the database class.
 */
 class Database {
-    //               #
-    //               #
-    //  ###    ##   ###   #  #  ###
-    // ##     # ##   #    #  #  #  #
-    //   ##   ##     #    #  #  #  #
-    // ###     ##     ##   ###  ###
-    //                          #
+    //                           #                       #
+    //                           #                       #
+    //  ##    ##   ###    ###   ###   ###   #  #   ##   ###    ##   ###
+    // #     #  #  #  #  ##      #    #  #  #  #  #      #    #  #  #  #
+    // #     #  #  #  #    ##    #    #     #  #  #      #    #  #  #
+    //  ##    ##   #  #  ###      ##  #      ###   ##     ##   ##   #
     /**
-     * A setup function that creates a new database object with the necessary settings.
+     * A constructor that creates a new database object with the necessary settings.
      * @param {object} settings The settings to use for the mssql module.
      */
     constructor(settings) {
@@ -43,7 +42,7 @@ class Database {
                 reject(new Error("You haven't setup your settings yet!"));
                 return;
             }
-            
+
             if (!params) {
                 params = {};
             }
