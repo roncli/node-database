@@ -25,6 +25,37 @@ class Database {
         this.settings = settings;
     }
 
+    //              #    ###               ##
+    //              #    #  #               #
+    //  ###   ##   ###   #  #   ##    ##    #
+    // #  #  # ##   #    ###   #  #  #  #   #
+    //  ##   ##     #    #     #  #  #  #   #
+    // #      ##     ##  #      ##    ##   ###
+    //  ###
+    /**
+     * Gets the connection pool to use.  Creates it if it doesn't exist.
+     * @returns {Promise} A promise that resolves when the pool has been retrieved.
+     */
+    getPool() {
+        return new Promise((resolve, reject) => {
+            if (this.pool) {
+                resolve(this.pool);
+            } else {
+                if (!this.settings) {
+                    reject(new Error("You haven't setup your settings yet!"));
+                    return;
+                }
+
+                sql.connect(this.settings).then((pool) => {
+                    this.pool = pool;
+                    resolve(this.pool);
+                }).catch((err) => {
+                    reject(err);
+                });
+            }
+        });
+    }
+
     //  ###  #  #   ##   ###   #  #
     // #  #  #  #  # ##  #  #  #  #
     // #  #  #  #  ##    #      # #
@@ -37,58 +68,40 @@ class Database {
      * @return {Promise} A promise that resolves when the query is complete.
      */
     query(sqlStr, params) {
+        const db = this;
+
         return new Promise((resolve, reject) => {
-            if (!this.settings) {
-                reject(new Error("You haven't setup your settings yet!"));
-                return;
-            }
-
-            if (!params) {
-                params = {};
-            }
-
-            const conn = new sql.ConnectionPool(this.settings, (errPool) => {
-
-                if (errPool) {
-                    reject(errPool);
-                    return;
+            db.getPool().then((pool) => {
+                if (!params) {
+                    params = {};
                 }
 
-                const ps = new sql.PreparedStatement(conn);
+                const ps = new sql.PreparedStatement(pool);
 
                 Object.keys(params).forEach((key) => {
                     ps.input(key, params[key].type);
                 });
                 ps.multiple = true;
-                ps.prepare(sqlStr, (errPrepare) => {
-                    const paramList = {};
+                return ps.prepare(sqlStr);
+            }).then((ps) => {
+                const paramMap = Object.keys(params).map((key) => [key, params[key].value]),
+                    paramList = {};
 
-                    if (errPrepare) {
-                        reject(errPrepare);
-                        return;
-                    }
+                for (let i = 0, {length} = Object.keys(paramMap); i < length; i++) {
+                    paramList[paramMap[i][0]] = paramMap[i][1];
+                }
 
-                    const paramMap = Object.keys(params).map((key) => [key, params[key].value]);
-
-                    for (let i = 0, {length} = Object.keys(paramMap); i < length; i++) {
-                        paramList[paramMap[i][0]] = paramMap[i][1];
-                    }
-
-                    ps.execute(paramList, (errExecute, data) => {
-                        if (errExecute) {
-                            reject(errExecute);
-                            return;
-                        }
-
-                        ps.unprepare((errUnprepare) => {
-                            if (errUnprepare) {
-                                reject(errUnprepare);
-                                return;
-                            }
-                            resolve(data);
-                        });
+                ps.execute(paramList).then((data) => {
+                    ps.unprepare().then(() => {
+                        resolve(data);
+                    }).catch((err) => {
+                        reject(err);
                     });
+                }).catch((err) => {
+                    reject(err);
                 });
+            }).catch((err) => {
+                reject(err);
             });
         });
     }

@@ -2,7 +2,6 @@
 A simple reusable class to query a MS SQL Server database.  This uses the [mssql](https://github.com/tediousjs/node-mssql) package to access SQL Server.
 
 ## Usage
-
 ```javascript
 const Db = require("node-database");
 
@@ -36,9 +35,10 @@ db.query(
 
 See the [mssql](https://github.com/tediousjs/node-mssql) package for more examples of settings and how to query using the library.
 
-
-
 ## Version history
+
+### 1.0.2 - 5/7/2018
+* Use promises recently added to the mssql library for better exception handling.
 
 ### 1.0.1 - 5/7/2018
 * Make the class more object-oriented so that we can have multiple instances connecting to multiple databases.
