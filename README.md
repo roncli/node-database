@@ -40,5 +40,8 @@ See the [mssql](https://github.com/tediousjs/node-mssql) package for more exampl
 
 ## Version history
 
-### 1.0.0
+### 1.0.1 - 5/7/2018
+* Make the class more object-oriented so that we can have multiple instances connecting to multiple databases.
+
+### 1.0.0 - 5/7/2018
 * Initial release.
