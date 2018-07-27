@@ -5,8 +5,9 @@
     },
     "parserOptions": {
         "sourceType": "module",
-        "ecmaVersion": 6
+        "ecmaVersion": 7
     },
+    "parser": "babel-eslint",
     "extends": "eslint:all",
     "rules": {
         "array-element-newline": "off",

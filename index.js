@@ -1,4 +1,4 @@
-const sql = require("mssql");
+const {PreparedStatement, TYPES, connect} = require("mssql");
 
 //  ####           #            #
 //   #  #          #            #
@@ -34,26 +34,21 @@ class Database {
     //  ###
     /**
      * Gets the connection pool to use.  Creates it if it doesn't exist.
-     * @returns {Promise} A promise that resolves when the pool has been retrieved.
+     * @returns {Promise<ConnectionPool>} A promise that resolves with the retrieved connection pool.
      */
-    getPool() {
-        return new Promise((resolve, reject) => {
-            if (this.pool) {
-                resolve(this.pool);
-            } else {
-                if (!this.settings) {
-                    reject(new Error("You haven't setup your settings yet!"));
-                    return;
-                }
+    async getPool() {
+        // Check to see if we already have a connection pool, if so, return it.
+        if (this.pool) {
+            return this.pool;
+        }
 
-                sql.connect(this.settings).then((pool) => {
-                    this.pool = pool;
-                    resolve(this.pool);
-                }).catch((err) => {
-                    reject(err);
-                });
-            }
-        });
+        // Ensure the settings have been setup first.
+        if (!this.settings) {
+            throw new Error("You haven't setup your settings yet!");
+        }
+
+        // Connect to the database, create a new connection pool, and return it.
+        return this.pool = await connect(this.settings);
     }
 
     //  ###  #  #   ##   ###   #  #
@@ -64,56 +59,55 @@ class Database {
     /**
      * Executes a query.
      * @param {string} sqlStr The SQL query.
-     * @param {object} params The parameters of the query.
+     * @param {object} [params] The parameters of the query.
      * @return {Promise} A promise that resolves when the query is complete.
      */
-    query(sqlStr, params) {
-        const db = this;
+    async query(sqlStr, params) {
+        // If params haven't been sent, default them.
+        if (!params) {
+            params = {};
+        }
 
-        return new Promise((resolve, reject) => {
-            db.getPool().then((pool) => {
-                if (!params) {
-                    params = {};
-                }
+        // Setup a new prepared statement.
+        const ps = new PreparedStatement(await this.getPool());
+        ps.multiple = true;
 
-                const ps = new sql.PreparedStatement(pool);
-
-                Object.keys(params).forEach((key) => {
-                    ps.input(key, params[key].type);
-                });
-                ps.multiple = true;
-                return ps.prepare(sqlStr);
-            }).then((ps) => {
-                const paramMap = Object.keys(params).map((key) => [key, params[key].value]),
-                    paramList = {};
-
-                for (let i = 0, {length} = Object.keys(paramMap); i < length; i++) {
-                    paramList[paramMap[i][0]] = paramMap[i][1];
-                }
-
-                ps.execute(paramList).then((data) => {
-                    ps.unprepare().then(() => {
-                        resolve(data);
-                    }).catch((err) => {
-                        reject(err);
-                    });
-                }).catch((err) => {
-                    reject(err);
-                });
-            }).catch((err) => {
-                reject(err);
-            });
+        // Add each parameter as an input to the prepared statement.
+        Object.keys(params).forEach((key) => {
+            ps.input(key, params[key].type);
         });
+
+        // Prepare the statement.
+        await ps.prepare(sqlStr);
+
+        // Get the values to send to the query.
+        const paramMap = Object.keys(params).map((key) => [key, params[key].value]),
+            paramList = {};
+
+        for (let index = 0, {length} = Object.keys(paramMap); index < length; index++) {
+            paramList[paramMap[index][0]] = paramMap[index][1];
+        }
+
+        // Retrieve the data.
+        const data = await ps.execute(paramList);
+
+        // Unprepare the statement.
+        await ps.unprepare();
+
+        // Return the data.
+        return data;
     }
 }
 
-({TYPES: Database.TYPES} = sql);
+// Make the mssql types available.
+Database.TYPES = TYPES;
 
-Object.keys(sql.TYPES).forEach((key) => {
-    const {TYPES: {[key]: value}} = sql;
+Object.keys(TYPES).forEach((key) => {
+    const {[key]: value} = TYPES;
 
     Database[key] = value;
     Database[key.toUpperCase()] = value;
 });
 
+// Export the object.
 module.exports = Database;
