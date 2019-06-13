@@ -37,6 +37,10 @@ See the [mssql](https://github.com/tediousjs/node-mssql) package for more exampl
 
 ## Version history
 
+### 1.2.0 - 6/12/2019
+* Improve handling of dead connections.
+* Fix concurrency issues.
+
 ### 1.1.0 - 7/26/2018
 * ES7 update.
 * Fixed bug with errors thrown by mssql being uncaught rejections, ie: server timeouts, etc.

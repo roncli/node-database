@@ -1,4 +1,7 @@
-const {PreparedStatement, TYPES, connect} = require("mssql");
+const mssql = require("mssql"),
+    {PreparedStatement, TYPES} = mssql;
+
+let poolQueue = Promise.resolve();
 
 //  ####           #            #
 //   #  #          #            #
@@ -36,19 +39,26 @@ class Database {
      * Gets the connection pool to use.  Creates it if it doesn't exist.
      * @returns {Promise<ConnectionPool>} A promise that resolves with the retrieved connection pool.
      */
-    async getPool() {
-        // Check to see if we already have a connection pool, if so, return it.
-        if (this.pool) {
-            return this.pool;
-        }
+    getPool() {
+        return poolQueue = poolQueue.then(() => {}).catch(() => {}).then(async () => {
+            // Check to see if we already have a connection pool, if so, return it.
+            if (this.pool && !this.pool.connected) {
+                await mssql.close();
+                delete this.pool;
+            }
 
-        // Ensure the settings have been setup first.
-        if (!this.settings) {
-            throw new Error("You haven't setup your settings yet!");
-        }
+            if (this.pool && this.pool.connected) {
+                return this.pool;
+            }
 
-        // Connect to the database, create a new connection pool, and return it.
-        return this.pool = await connect(this.settings);
+            // Ensure the settings have been setup first.
+            if (!this.settings) {
+                throw new Error("You haven't setup your settings yet!");
+            }
+
+            // Connect to the database, create a new connection pool, and return it.
+            return this.pool = await mssql.connect(this.settings);
+        });
     }
 
     //  ###  #  #   ##   ###   #  #
