@@ -37,6 +37,9 @@ See the [mssql](https://github.com/tediousjs/node-mssql) package for more exampl
 
 ## Version history
 
+### 1.2.1 - 11/21/2019
+* Attempt to close existing SQL connection before opening a new one, even if it may not seem necessary.
+
 ### 1.2 - 7/10/2019
 * Improve handling of dead connections.
 * Fix concurrency issues.

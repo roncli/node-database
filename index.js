@@ -56,7 +56,11 @@ class Database {
                 throw new Error("You haven't setup your settings yet!");
             }
 
-            // Connect to the database, create a new connection pool, and return it.
+            // Connect to the database, close any existing connection, create a new connection pool, and return it.
+            try {
+                await mssql.close();
+            } finally {}
+
             return this.pool = await mssql.connect(this.settings);
         });
     }
