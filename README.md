@@ -7,7 +7,7 @@ Since this is largely used for personal projects, this is not an npm package.  N
 ```json
 {
     "dependencies": {
-        "node-database": "roncli/node-database#v1.2.3"
+        "node-database": "roncli/node-database#v1.2.4"
     }
 }
 ```
