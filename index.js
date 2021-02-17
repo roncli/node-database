@@ -1,6 +1,13 @@
+/**
+ * @typedef {import("mssql").config} Mssql.config
+ * @typedef {import("mssql").ConnectionPool} Mssql.ConnectionPool
+ * @typedef {{[x: string]: {type: import("mssql").ISqlTypeFactoryWithNoParams | import("mssql").ISqlTypeWithLength | import("mssql").ISqlTypeWithNoParams | import("mssql").ISqlTypeWithPrecisionScale | import("mssql").ISqlTypeWithScale | import("mssql").ISqlTypeWithTvpType, value: any}}} Params
+ */
+
 const mssql = require("mssql"),
     {PreparedStatement, TYPES} = mssql;
 
+/** @type {Promise} */
 let poolQueue = Promise.resolve();
 
 //  ####           #            #
@@ -22,7 +29,7 @@ class Database {
     //  ##    ##   #  #  ###      ##  #      ###   ##     ##   ##   #
     /**
      * A constructor that creates a new database object with the necessary settings.
-     * @param {object} settings The settings to use for the mssql module.
+     * @param {Mssql.config} settings The settings to use for the mssql module.
      */
     constructor(settings) {
         this.settings = settings;
@@ -37,7 +44,7 @@ class Database {
     //  ###
     /**
      * Gets the connection pool to use.  Creates it if it doesn't exist.
-     * @returns {Promise<ConnectionPool>} A promise that resolves with the retrieved connection pool.
+     * @returns {Promise<Mssql.ConnectionPool>} A promise that resolves with the retrieved connection pool.
      */
     getPool() {
         return poolQueue = poolQueue.then(() => {}).catch(() => {}).then(async () => {
@@ -72,11 +79,11 @@ class Database {
     //    #                     #
     /**
      * Executes a query.
-     * @param {string} sqlStr The SQL query.
-     * @param {object} [params] The parameters of the query.
+     * @param {string} sql The SQL query.
+     * @param {Params} [params] The parameters of the query.
      * @return {Promise} A promise that resolves when the query is complete.
      */
-    async query(sqlStr, params) {
+    async query(sql, params) {
         // If params haven't been sent, default them.
         if (!params) {
             params = {};
@@ -84,7 +91,6 @@ class Database {
 
         // Setup a new prepared statement.
         const ps = new PreparedStatement(await this.getPool());
-        ps.multiple = true;
 
         // Add each parameter as an input to the prepared statement.
         Object.keys(params).forEach((key) => {
@@ -92,7 +98,7 @@ class Database {
         });
 
         // Prepare the statement.
-        await ps.prepare(sqlStr);
+        await ps.prepare(sql);
 
         // Get the values to send to the query.
         const paramMap = Object.keys(params).map((key) => [key, params[key].value]),
@@ -113,11 +119,8 @@ class Database {
     }
 }
 
-// Make the mssql types available.
-Database.TYPES = TYPES;
-
 Object.keys(TYPES).forEach((key) => {
-    const {[key]: value} = TYPES;
+    const value = TYPES[key];
 
     Database[key] = value;
     Database[key.toUpperCase()] = value;
