@@ -7,14 +7,14 @@ Since this is largely used for personal projects, this is not an npm package.  N
 ```json
 {
     "dependencies": {
-        "node-database": "roncli/node-database#v1.2.4"
+        "@roncli/node-database": "roncli/node-database#v1.2.4"
     }
 }
 ```
 
 ## Usage
 ```javascript
-const Db = require("node-database");
+const Db = require("@roncli/node-database");
 
 const db = new Db({
     server: "ms.sql.server.com",
