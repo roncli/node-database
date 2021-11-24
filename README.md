@@ -53,6 +53,9 @@ See the [mssql](https://github.com/tediousjs/node-mssql) package for more exampl
 
 ## Version history
 
+### v1.2.6 - 11/23/2021
+* Package updates.
+
 ### v1.2.5 - 8/30/2021
 * Package updates.
 
