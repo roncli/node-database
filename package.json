@@ -18,7 +18,7 @@
         "url": "https://github.com/roncli/node-database.git"
     },
     "dependencies": {
-        "mssql": "8.0.1"
+        "mssql": "8.0.2"
     },
     "devDependencies": {
         "@babel/core": "7.17.0",
