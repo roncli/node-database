@@ -7,7 +7,7 @@ Since this is largely used for personal projects, this is not an npm package.  N
 ```json
 {
     "dependencies": {
-        "@roncli/node-database": "roncli/node-database#v1.2.9"
+        "@roncli/node-database": "roncli/node-database#v1.2.11"
     }
 }
 ```
@@ -52,6 +52,9 @@ try {
 See the [mssql](https://github.com/tediousjs/node-mssql) package for more examples of settings and how to query using the library.
 
 ## Version history
+
+### v1.2.11 - 8/9/2022
+* Package updates.
 
 ### v1.2.10 - 5/30/2022
 * Package updates.
