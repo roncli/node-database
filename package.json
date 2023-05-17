@@ -1,6 +1,6 @@
 {
     "name": "node-database",
-    "version": "1.2.12",
+    "version": "1.2.13",
     "description": "A simple reusable class to query a MS SQL Server database.",
     "homepage": "https://github.com/roncli/node-database",
     "bugs": {
