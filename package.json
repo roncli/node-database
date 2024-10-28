@@ -21,7 +21,7 @@
         "mssql": "10.0.2"
     },
     "devDependencies": {
-        "@babel/core": "7.25.9",
+        "@babel/core": "7.26.0",
         "@babel/eslint-parser": "7.25.9",
         "@types/mssql": "9.1.5"
     },
