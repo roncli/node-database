@@ -22,7 +22,7 @@
     },
     "devDependencies": {
         "@babel/core": "7.26.10",
-        "@babel/eslint-parser": "7.26.8",
+        "@babel/eslint-parser": "7.26.10",
         "@types/mssql": "9.1.5"
     },
     "engines": {
