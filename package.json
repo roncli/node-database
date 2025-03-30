@@ -21,12 +21,13 @@
         "mssql": "11.0.1"
     },
     "devDependencies": {
-        "@babel/core": "7.26.10",
-        "@babel/eslint-parser": "7.27.0",
-        "@types/mssql": "9.1.5"
+        "@eslint/js": "9.23.0",
+        "@stylistic/eslint-plugin": "4.2.0",
+        "@types/mssql": "9.1.7",
+        "eslint-plugin-jsdoc": "50.6.9"
     },
     "engines": {
-        "node": ">=14.0.0"
+        "node": ">=18.0.0"
     },
     "private": true
 }
