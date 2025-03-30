@@ -53,6 +53,10 @@ See the [mssql](https://github.com/tediousjs/node-mssql) package for more exampl
 
 ## Version history
 
+### v1.2.16 - 3/29/2025
+* Add `jest` unit tests.
+* Package updates.
+
 ### v1.2.15 - 9/14/2023
 * Package updates.
 
