@@ -23,11 +23,16 @@
     "devDependencies": {
         "@eslint/js": "9.23.0",
         "@stylistic/eslint-plugin": "4.2.0",
+        "@types/jest": "29.5.14",
         "@types/mssql": "9.1.7",
-        "eslint-plugin-jsdoc": "50.6.9"
+        "eslint-plugin-jsdoc": "50.6.9",
+        "jest": "29.7.0"
     },
     "engines": {
         "node": ">=18.0.0"
+    },
+    "scripts": {
+        "test": "jest --coverage"
     },
     "private": true
 }
