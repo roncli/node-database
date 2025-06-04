@@ -22,7 +22,7 @@
     },
     "devDependencies": {
         "@eslint/js": "9.28.0",
-        "@stylistic/eslint-plugin": "4.4.0",
+        "@stylistic/eslint-plugin": "4.4.1",
         "@types/jest": "29.5.14",
         "@types/mssql": "9.1.7",
         "eslint-plugin-jsdoc": "50.7.1",
