@@ -18,7 +18,7 @@
         "url": "https://github.com/roncli/node-database.git"
     },
     "dependencies": {
-        "mssql": "11.0.1"
+        "mssql": "12.1.1"
     },
     "devDependencies": {
         "@eslint/js": "9.39.1",
